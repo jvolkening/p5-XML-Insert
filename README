@@ -13,9 +13,9 @@ SYNOPSIS
         );
 
         $engine->run;
-
+        
 DESCRIPTION
-    "XML::Insert" is designed to efficiently insert elements at specific
+    `XML::Insert' is designed to efficiently insert elements at specific
     locations in a streaming XML file without the need to load the whole
     file into a DOM representation. It's flexible syntax should allow
     insertion at a given place in the tree, preserving element order and
@@ -26,7 +26,7 @@ METHODS
     new
             my $engine = XML::Insert->new( $xml_file );
 
-        Create a new "XML::Insert" engine. Requires a single argument, which
+        Create a new `XML::Insert' engine. Requires a single argument, which
         can be either a filename of the XML to parse or a filehandle open to
         the file.
 
@@ -39,27 +39,23 @@ METHODS
 
         Registers an insertion to make. There are two required arguments:
 
-        *
-         parent - the location in a simplified XPath format (i.e. no
-         attributes, etc) to the parent element within which the insertion
-         should happen
-
-        *
-         callback - a subroutine reference to call. The subroutine will be
-         passed two arguments (depth in the tree and string to use for each
-         depth-wise indentation) and should return the string to be
-         inserted. See the SYNOPSIS for an example callback
+        * parent - the location in a simplified XPath format (i.e. no
+        attributes, etc) to the parent element within which the insertion
+        should happen
+        * callback - a subroutine reference to call. The subroutine will be
+        passed two arguments (depth in the tree and string to use for each
+        depth-wise indentation) and should return the string to be inserted.
+        See the SYNOPSIS for an example callback
 
         There is one optional argument:
 
-        *
-         before - an array reference to element names. If the order in which
-         the new element is inserted within the parent matters, this
-         reference should contain a list of elements before which the
-         element should be placed. If any of these elements are seen within
-         the parent, the element will be inserted immediately before. If
-         none are defined or none are seen (e.g. they may be optional), the
-         element will be inserted as the last item within the parent.
+        * before - an array reference to element names. If the order in
+        which the new element is inserted within the parent matters, this
+        reference should contain a list of elements before which the element
+        should be placed. If any of these elements are seen within the
+        parent, the element will be inserted immediately before. If none are
+        defined or none are seen (e.g. they may be optional), the element
+        will be inserted as the last item within the parent.
 
     set_output
             $engine->set_output( $fn_or_fh );
