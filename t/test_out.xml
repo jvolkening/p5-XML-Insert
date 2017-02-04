@@ -1,0 +1,15 @@
+<foo attr="bar">
+    <moo />
+    <baz>lorem ipsum dolor</baz>
+    <bar id="1" name="foo">
+        <zoo />
+        <foo>Sed dapibus erat metus</foo>
+        <foo>ullamcorper vulputate nisi aliquiet eu</foo>
+        <noo />
+        <loo type="empty"></loo>
+    </bar>
+    <bar id="2" />
+    <bop attr="bop" />
+    <yoo />
+    <yoo />
+</foo>
