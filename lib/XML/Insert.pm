@@ -28,14 +28,21 @@ sub register {
 
     my ($self, %args) = @_;
 
-    die "missing parent argument" if (! defined $args{parent});
+    die "missing path argument" if (! defined $args{path});
     die "missing callback argument" if (! defined $args{callback});
     for my $p (keys %args) {
         die "Invalid parameter $p"
-            if (! any {$p eq $_} qw/parent callback before multi/);
+            if (! any {$p eq $_} qw/path callback before multi unique/);
     }
 
-    $args{multi} //= 0; # default false
+    # parse out parent
+    my $parent = $args{path};
+    $parent =~ s/\/[^\/]+//;
+    die "Couldn't split parent/path" if ($parent eq $args{path});
+    $args{parent} = $parent;
+
+    $args{multi}  //= 0; # default false
+    $args{unique} //= 1; # default true
 
     push @{ $self->{inserts} }, {%args};
 
@@ -91,10 +98,14 @@ sub _handle_tag {
 
     my $extra = $type eq 'start' ? 0 : 1;
     my $depth = $expat->depth;
-    my $real_depth =  $depth + $extra;
+    my $real_depth = $depth + $extra;
 
     my $ins = '';
     for (@{ $self->{inserts} }) {
+        if ($_->{uniqeu} && $path eq $_->{path}) {
+            die "Tried to insert existing element when 'unique' is specified";
+        }
+            
         next if ( $_->{was_handled} );
         next if ( $path ne $_->{parent} );
         next if ($type eq 'start'
@@ -190,7 +201,8 @@ either a filename of the XML to parse or a filehandle open to the file.
         'parent'   => '/root/other/stuff',
         'before'   => [qw/ four five six/],
         'callback' => \&add_four,
-        'multi'    => 1,
+        'multi'    => 0,
+        'unique'   => 1,
     );
 
 Registers an insertion to make. There are two required arguments:
@@ -207,7 +219,7 @@ an example callback
 
 =back
 
-There are two optional arguments:
+There are three optional arguments:
 
 =over 1
 
@@ -222,6 +234,10 @@ optional), the element will be inserted as the last item within the parent.
 elements. If true, the insertion will occur for each valid parent found. If
 false, the insertion will occur on the first parent found only. Default is
 false.
+
+=item * unique - a boolean value indicating whether to throw an exception if
+an existing element with the same path is found. If false, a new element will be
+added after any existing ones. Default is true (die on duplicate).
 
 =back
 

@@ -17,27 +17,27 @@ plan tests => 2;
 my $engine = XML::Insert->new('t/test_data/test_in.xml');
 
 $engine->register(
-   parent => '/foo/bar',
-   before => [qw/goo loo/], # goo doesn't exist
+   path     => '/foo/bar/noo',
+   before   => [qw/goo loo/], # goo doesn't exist
    callback => sub{ insert('noo', @_) },
 );
 $engine->register(
-   parent => '/foo/bar',
-   before => [qw/foo/],
+   path     => '/foo/bar/zoo',
+   before   => [qw/foo/],
    callback => sub{ insert('zoo', @_) },
 );
 $engine->register(
-   parent => '/foo',
-   before => [qw/baz/],
+   path     => '/foo/moo',
+   before   => [qw/baz/],
    callback => sub{ insert('moo', @_) },
 );
 $engine->register(
-   parent => '/foo',
+   path     => '/foo/yoo',
    callback => sub{ insert('yoo', @_) },
    before   => [qw/fap/], # doesn't exist
 );
 $engine->register(
-   parent => '/foo',
+   path     => '/foo/yoo',
    callback => sub{ insert('yoo', @_) },
 );
 
@@ -53,7 +53,7 @@ ok( compare($tmp_01, 't/test_data/test_out_01.xml'), 'output 01 matches' );
 $engine = XML::Insert->new('t/test_data/test_in.xml');
 
 $engine->register(
-   parent   => '/foo/bar',
+   path     => '/foo/bar/multi',
    callback => sub{ insert('multi', @_) },
    multi    => 1
 );
