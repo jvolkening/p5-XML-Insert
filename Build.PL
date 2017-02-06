@@ -14,7 +14,8 @@ my $builder = Module::Build->new(
         'Module::Build' => 0,
     },
     build_requires => {
-        'Test::More' => 0,
+        'Test::More'      => 0,
+        'Test::Exception' => 0,
     },
     requires => {
         'XML::Parser' => 0,

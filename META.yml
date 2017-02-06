@@ -1,0 +1,25 @@
+---
+abstract: 'insert elements into streamed XML'
+author:
+  - 'Jeremy Volkening <jdv@base2bio.com>'
+build_requires:
+  Test::Exception: '0'
+  Test::More: '0'
+configure_requires:
+  Module::Build: '0'
+dynamic_config: 1
+generated_by: 'Module::Build version 0.421, CPAN::Meta::Converter version 2.143240'
+license: artistic_2
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: XML-Insert
+provides:
+  XML::Insert:
+    file: lib/XML/Insert.pm
+    version: '0.001'
+requires:
+  XML::Parser: '0'
+resources:
+  license: http://www.perlfoundation.org/artistic_license_2_0
+version: '0.001'

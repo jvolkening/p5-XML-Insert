@@ -32,8 +32,10 @@ sub register {
     die "missing callback argument" if (! defined $args{callback});
     for my $p (keys %args) {
         die "Invalid parameter $p"
-            if (! any {$p eq $_} qw/parent callback before/);
+            if (! any {$p eq $_} qw/parent callback before multi/);
     }
+
+    $args{multi} //= 0; # default false
 
     push @{ $self->{inserts} }, {%args};
 
@@ -71,8 +73,10 @@ sub run {
 
     $parser->parse($fh);
 
+    my $fh_out = $self->{fh_out};
+
     # don't forget last bit
-    print $self->{prev};
+    print {$fh_out} $self->{prev};
 
 }
 
@@ -96,7 +100,7 @@ sub _handle_tag {
         next if ($type eq 'start'
             && ! any {$_ eq $el} @{ $_->{before} } );
         $ins .= $_->{callback}->($real_depth, $self->{indent});
-        $_->{was_handled} = 1;
+        $_->{was_handled} = 1 if (! $_->{multi});
     }
 
     # The following logic is used to preserve formatting and is based on the
@@ -107,13 +111,16 @@ sub _handle_tag {
     # first if depth == 0. This should only happen for an insertion right
     # before the closing root element, which seems to need special treatment.
 
+    my $fh_out = $self->{fh_out};
+
+    #if ($self->{prev} =~ /\S/) {
     if ($self->{prev} =~ /\S/ || $depth == 0) {
-        print $self->{prev};
-        print $ins;
+        print {$fh_out} $self->{prev};
+        print {$fh_out} $ins;
     }
     else {
-        print $ins;
-        print $self->{prev};
+        print {$fh_out} $ins;
+        print {$fh_out} $self->{prev};
     }
     $self->{prev} = $expat->original_string;
 } 
@@ -122,7 +129,9 @@ sub _handle_default {
 
     my ($self, $expat, $str) = @_;
 
-    print $self->{prev};
+    my $fh_out = $self->{fh_out};
+
+    print {$fh_out} $self->{prev};
     $self->{prev} = $str;
 
     # determine default indent;
@@ -179,8 +188,9 @@ either a filename of the XML to parse or a filehandle open to the file.
 
     $engine->register(
         'parent'   => '/root/other/stuff',
-        'before'  => [qw/ four five six/],
-        'callback'=> \&add_four,
+        'before'   => [qw/ four five six/],
+        'callback' => \&add_four,
+        'multi'    => 1,
     );
 
 Registers an insertion to make. There are two required arguments:
@@ -197,7 +207,7 @@ an example callback
 
 =back
 
-There is one optional argument:
+There are two optional arguments:
 
 =over 1
 
@@ -207,6 +217,11 @@ contain a list of elements before which the element should be placed. If any
 of these elements are seen within the parent, the element will be inserted
 immediately before. If none are defined or none are seen (e.g. they may be
 optional), the element will be inserted as the last item within the parent.
+
+=item * multi - a boolean value indicating whether to insert into multiple
+elements. If true, the insertion will occur for each valid parent found. If
+false, the insertion will occur on the first parent found only. Default is
+false.
 
 =back
 
@@ -230,6 +245,12 @@ results to the output target.
 
 This is code is in alpha testing stage and the API is not guaranteed to be
 stable.
+
+The module currently cannot handle insertion into empty elements (e.g. you
+should not specify as parent an element that may appear as "<foo />"). This
+feature may be added in a future release. As of now, behavior is undefined,
+but generally the item will be insert after the parent element, which is not
+what is intended.
 
 Please reports bugs to the author.
 

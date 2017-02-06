@@ -5,15 +5,16 @@ use warnings;
 use 5.012;
 
 use Test::More;
+use Test::Exception;
 
 use File::Temp;
 use File::Compare;
 
 use XML::Insert;
 
-plan tests => 1;
+plan tests => 2;
 
-my $engine = XML::Insert->new('t/test_in.xml');
+my $engine = XML::Insert->new('t/test_data/test_in.xml');
 
 $engine->register(
    parent => '/foo/bar',
@@ -40,14 +41,29 @@ $engine->register(
    callback => sub{ insert('yoo', @_) },
 );
 
-my $tmp = File::Temp->new(UNLINK => 1);
+my $tmp_01 = File::Temp->new(UNLINK => 1);
 
-$engine->set_output($tmp);
+$engine->set_output($tmp_01);
 $engine->run;
 
-close $tmp;
+ok( compare($tmp_01, 't/test_data/test_out_01.xml'), 'output 01 matches' );
 
-ok( compare($tmp, 't/test_out.xml'), 'output matches' );
+# test 'multi' parameter
+
+$engine = XML::Insert->new('t/test_data/test_in.xml');
+
+$engine->register(
+   parent   => '/foo/bar',
+   callback => sub{ insert('multi', @_) },
+   multi    => 1
+);
+
+my $tmp_02 = File::Temp->new(UNLINK => 1);
+
+$engine->set_output($tmp_02);
+$engine->run;
+
+ok( compare($tmp_02, 't/test_data/test_out_02.xml'), 'output 02 matches' );
 
 exit;
 

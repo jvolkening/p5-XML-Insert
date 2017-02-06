@@ -5,6 +5,7 @@
         <foo>ullamcorper vulputate nisi aliquiet eu</foo>
         <loo type="empty"></loo>
     </bar>
-    <bar id="2" />
+    <bar id="2">
+    </bar>
     <bop attr="bop" />
 </foo>

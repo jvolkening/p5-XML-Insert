@@ -8,7 +8,8 @@
         <noo />
         <loo type="empty"></loo>
     </bar>
-    <bar id="2" />
+    <bar id="2">
+    </bar>
     <bop attr="bop" />
     <yoo />
     <yoo />

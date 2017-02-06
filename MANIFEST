@@ -4,8 +4,13 @@ lib/XML/Insert.pm
 MANIFEST			This list of files
 README
 t/00-load.t
+t/boilerplate.t
+t/insert.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
+t/test_data/test_in.xml
+t/test_data/test_out_01.xml
+t/test_data/test_out_02.xml
 META.yml
 META.json
