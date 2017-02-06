@@ -12,7 +12,7 @@ use File::Compare;
 
 use XML::Insert;
 
-plan tests => 2;
+plan tests => 3;
 
 my $engine = XML::Insert->new('t/test_data/test_in.xml');
 
@@ -68,6 +68,21 @@ $engine->run;
 close $tmp_02;
 
 ok( compare("$tmp_02", 't/test_data/test_out_02.xml') == 0, 'output 02 matches' );
+
+$engine = XML::Insert->new('t/test_data/test_in.xml');
+
+my $tmp_03 = File::Temp->new(UNLINK => 1);
+
+$engine->set_output($tmp_03);
+
+$engine->register(
+   path     => '/foo/bop',
+   callback => sub{ insert('bop', @_) },
+   multi    => 1,
+   unique   => 1,
+);
+
+dies_ok( sub {$engine->run }, "die on unique" );
 
 exit;
 

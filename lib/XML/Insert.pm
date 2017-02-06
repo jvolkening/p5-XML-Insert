@@ -102,7 +102,7 @@ sub _handle_tag {
 
     my $ins = '';
     for (@{ $self->{inserts} }) {
-        if ($_->{uniqeu} && $path eq $_->{path}) {
+        if ($_->{unique} && $path eq $_->{path}) {
             die "Tried to insert existing element when 'unique' is specified";
         }
             
