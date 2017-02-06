@@ -37,7 +37,7 @@ sub register {
 
     # parse out parent
     my $parent = $args{path};
-    $parent =~ s/\/[^\/]+//;
+    $parent =~ s/\/[^\/]+$//;
     die "Couldn't split parent/path" if ($parent eq $args{path});
     $args{parent} = $parent;
 

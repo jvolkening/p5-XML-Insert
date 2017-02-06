@@ -46,7 +46,9 @@ my $tmp_01 = File::Temp->new(UNLINK => 1);
 $engine->set_output($tmp_01);
 $engine->run;
 
-ok( compare($tmp_01, 't/test_data/test_out_01.xml'), 'output 01 matches' );
+close $tmp_01;
+
+ok( compare("$tmp_01", 't/test_data/test_out_01.xml') == 0, 'output 01 matches' );
 
 # test 'multi' parameter
 
@@ -63,7 +65,9 @@ my $tmp_02 = File::Temp->new(UNLINK => 1);
 $engine->set_output($tmp_02);
 $engine->run;
 
-ok( compare($tmp_02, 't/test_data/test_out_02.xml'), 'output 02 matches' );
+close $tmp_02;
+
+ok( compare("$tmp_02", 't/test_data/test_out_02.xml') == 0, 'output 02 matches' );
 
 exit;
 
